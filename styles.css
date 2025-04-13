@@ -1,0 +1,127 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: #f5f7fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }
+  
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .card {
+    width: 90vw;
+    max-width: 400px;
+    height: 70vh;
+    max-height: 700px;
+    perspective: 1000px;
+    cursor: pointer;
+  }
+  
+  .card-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+  }
+  
+  .card.flipped .card-inner {
+    transform: rotateY(180deg);
+  }
+  
+  .card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 30px;
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 32px 24px;
+    box-sizing: border-box;
+    color: white;
+    text-align: center;
+  }
+  
+  .card-front {
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+  }
+  
+  .card-back {
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    transform: rotateY(180deg);
+  }
+  
+  .title {
+    font-size: 1.2em;
+    font-weight: bold;
+    opacity: 0.9;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  
+  .categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 90px);
+    gap: 16px;
+    margin-top: 20px;
+  }
+  
+  .category-btn {
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    border: none;
+    border-radius: 10px;
+    padding: 20px;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .category-btn:hover {
+    background: linear-gradient(135deg, #a777e3, #6e8efb);
+  }
+  
+  .card-back .category-name {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .card-back .question-text {
+    font-size: 1.2em;
+    line-height: 1.5em;
+    white-space: pre-wrap;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+.language-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background-color: #6e8efb;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+  }
+  
+  .language-toggle:hover {
+    background-color: #a777e3;
+  }
+  
