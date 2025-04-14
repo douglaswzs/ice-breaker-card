@@ -10,7 +10,7 @@ body {
 }
 
 [data-theme="light"] body {
-  background: #f5f7fa;
+  background: #9fb5d7;
 }
 
 [data-theme="dark"] body {
@@ -62,11 +62,11 @@ body {
 
 /* Light Theme Styles */
 [data-theme="light"] .card-front {
-  background: linear-gradient(135deg, #a8c0ff, #e3ffe7);
+  background: linear-gradient(135deg, #7595e9, #e3ffe7);
 }
 
 [data-theme="light"] .card-back {
-  background: linear-gradient(135deg, #dbe6ff, #a3bffa);
+  background: linear-gradient(135deg, #f366f2, #cbdba2);
   transform: rotateY(180deg);
 }
 
@@ -140,6 +140,40 @@ body {
   align-items: center;
   justify-content: center;
 }
+
+.question-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* vertical centering */
+  gap: 20px;
+  text-align: center;
+  font-size: 1.2em;
+  line-height: 1.5;
+  flex-grow: 1;
+  width: 100%;
+}
+
+.question-text .line {
+  width: 100%;
+  text-align: center;
+  font-size: 1.2em;
+  line-height: 1.5;
+}
+
+.question-text .line.en {
+  font-weight: bold;
+}
+
+.question-text .line.zh {
+  font-family: 'Noto Sans SC', sans-serif;
+}
+
+.question-text .line.roman {
+  font-style: italic;
+  opacity: 0.8;
+}
+
 
 .top-controls {
   position: absolute;

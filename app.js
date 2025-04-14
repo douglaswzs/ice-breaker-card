@@ -58,6 +58,25 @@ function getDisplayText(en, zh, roman) {
   }
 }
 
+// ✅ New helper function to return question HTML per language mode
+function renderQuestionHTML(en, zh, roman) {
+  let html = "";
+
+  if (currentLanguage === "en" || currentLanguage === "en+zh" || currentLanguage === "en+zh+roman") {
+    html += `<div class="line en">${en}</div>`;
+  }
+
+  if (currentLanguage === "zh" || currentLanguage === "en+zh" || currentLanguage === "en+zh+roman") {
+    html += `<div class="line zh">${zh}</div>`;
+  }
+
+  if (currentLanguage === "en+zh+roman") {
+    html += `<div class="line roman">${roman}</div>`;
+  }
+
+  return html;
+}
+
 function getRandomQuestion(categoryFilter = "random") {
   const categories = data.categories;
 
@@ -108,7 +127,7 @@ function drawQuestion(categoryFilter) {
   lastCategory = originalCategory;
   originalQuestion = oq;
   categoryName.textContent = category;
-  questionText.textContent = question;
+  questionText.innerHTML = renderQuestionHTML(oq.en, oq.zh, oq.roman);
 }
 
 function playFlipSound() {
@@ -159,7 +178,7 @@ languageToggle.addEventListener("click", () => {
 
   if (card.classList.contains("flipped") && lastCategory && originalQuestion) {
     categoryName.textContent = getDisplayText(lastCategory.name.en, lastCategory.name.zh, lastCategory.name.roman);
-    questionText.textContent = getDisplayText(originalQuestion.en, originalQuestion.zh, originalQuestion.roman);
+    questionText.innerHTML = renderQuestionHTML(originalQuestion.en, originalQuestion.zh, originalQuestion.roman);
   }
 });
 
@@ -191,7 +210,7 @@ card.addEventListener("click", () => {
 
   if (!card.classList.contains("flipped") && lastCategory && originalQuestion) {
     categoryName.textContent = getDisplayText(lastCategory.name.en, lastCategory.name.zh, lastCategory.name.roman);
-    questionText.textContent = getDisplayText(originalQuestion.en, originalQuestion.zh, originalQuestion.roman);
+    questionText.innerHTML = renderQuestionHTML(originalQuestion.en, originalQuestion.zh, originalQuestion.roman);
   }
 
   playFlipSound();
