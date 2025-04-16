@@ -7,6 +7,25 @@ const SOUND_KEY = "sound";
 const DEFAULT_SOUND = "on";
 let soundOn = localStorage.getItem(SOUND_KEY) ?? DEFAULT_SOUND;
 
+const TTS_KEY = "ttsSetting";
+const DEFAULT_TTS = "mute";
+let ttsSetting = localStorage.getItem(TTS_KEY) || DEFAULT_TTS;
+let isSpeaking = false;
+const ttsCycle = {
+  mute: "en",
+  en: "zh",
+  zh: "zh-yue",
+  "zh-yue": "mute"
+};
+
+const ttsLabels = {
+  mute: "🔇 TTS",
+  en: "🗣️ EN",
+  zh: "🗣️ 中",
+  "zh-yue": "🗣️ 粤"
+};
+
+
 const THEME_KEY = "theme";
 const DEFAULT_THEME = "light";
 const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -87,11 +106,11 @@ function renderQuestionHTML(en, zh, roman) {
 }
 
 function getRandomQuestion(categoryFilter = "random") {
-  const categories = data.categories;
+  const categories = data.categories.filter(c => activeCategories.includes(c.name.en));
 
   let selectedCategory = (categoryFilter === "random")
-  ? categories.filter(c => activeCategories.includes(c.name.en))[Math.floor(Math.random() * activeCategories.length)]
-  : categories.find(c => {
+    ? categories[Math.floor(Math.random() * categories.length)]
+    : categories.find(c => {
         const { en, zh } = c.name;
         return [en, zh, `${en} / ${zh}`].includes(categoryFilter);
       });
@@ -140,6 +159,7 @@ function drawQuestion(categoryFilter) {
   originalQuestion = oq;
   categoryName.textContent = category;
   questionText.innerHTML = renderQuestionHTML(oq.en, oq.zh, oq.roman);
+
 }
 
 function playFlipSound() {
@@ -168,6 +188,10 @@ function drawAndFlip(categoryFilter) {
   const showNewQuestion = () => {
     drawQuestion(categoryFilter);
     flipForward();
+
+    if (card.classList.contains("flipped") && lastCategory && originalQuestion) {
+      speakText(originalQuestion);
+    }
   };
 
   if (card.classList.contains("flipped")) {
@@ -250,12 +274,15 @@ document.addEventListener("click", (e) => {
 
 // Initial setup
 updateLanguageToggleText();
-soundToggle.textContent = soundLabels[soundOn];
+updateSoundToggleText();
+updateTTSoggleText();
+
 applyTheme(currentTheme);
 populateCategoryButtons();
 
-// Populate the initial question
+// Flipping on the card
 card.addEventListener("click", () => {
+  if (isSpeaking) return;
   if (!lastCategory) drawQuestion("random");
 
   if (!card.classList.contains("flipped") && lastCategory && originalQuestion) {
@@ -265,4 +292,47 @@ card.addEventListener("click", () => {
 
   playFlipSound();
   card.classList.toggle("flipped");
+
+  if (card.classList.contains("flipped") && lastCategory && originalQuestion) {
+    speakText(originalQuestion);
+  }
 });
+function updateSoundToggleText() {
+  soundToggle.textContent = soundLabels[soundOn];
+}
+function updateTTSoggleText() {
+  ttsToggle.textContent = ttsLabels[ttsSetting];
+}
+// Text-to-Speech functionality
+ttsToggle.addEventListener("click", () => {
+  ttsSetting = ttsCycle[ttsSetting];
+  localStorage.setItem(TTS_KEY, ttsSetting);
+  ttsToggle.textContent = ttsLabels[ttsSetting];
+});
+//  Text-to-Speech settings
+function speakText(question) {
+  if (ttsSetting === "mute") return;
+
+  const utter = new SpeechSynthesisUtterance();
+  utter.text =
+    ttsSetting === "en"
+      ? question.en
+      : question.zh; // Cantonese also uses zh for now
+
+  utter.lang = ttsSetting === "zh-yue" ? "zh-HK" : ttsSetting;
+
+  utter.onstart = () => {
+    isSpeaking = true;
+  };
+
+  utter.onend = () => {
+    isSpeaking = false;
+  };
+
+  utter.onerror = () => {
+    isSpeaking = false;
+  };
+
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utter);
+}
