@@ -183,10 +183,8 @@ body {
   gap: 10px;
 }
 
-.theme-toggle,
-.language-toggle,
-.sound-toggle {
-  padding: 10px 20px;
+.theme-toggle {
+  padding: 10px;
   background-color: #6e8efb;
   color: white;
   border: none;
@@ -196,9 +194,7 @@ body {
   transition: background-color 0.3s;
 }
 
-.theme-toggle:hover,
-.language-toggle:hover,
-.sound-toggle:hover {
+.theme-toggle:hover {
   background-color: #a777e3;
 }
 

@@ -10,11 +10,9 @@
   <div class="container">
     <!-- Language Toggle Button -->
     <div class="top-controls">
-      <button id="ttsToggle" class="sound-toggle">🔇 TTS</button>
-      <button id="soundToggle" class="sound-toggle">🔊 Sound</button>
+      <button id="languageToggle" class="theme-toggle">EN</button>
       <button id="themeToggle" class="theme-toggle">🌙</button>
-      <button id="languageToggle" class="language-toggle">EN</button>
-      <button id="filterToggle" class="theme-toggle">☰ Categories</button>
+      <button id="filterToggle" class="theme-toggle">☰ Settings</button>
     </div>
     <!-- Card -->
     <div class="card" id="iceBreakerCard">
@@ -34,6 +32,10 @@
 
   <div id="categoryFilterPopup" class="popup hidden">
     <div class="popup-content">
+      <h3>Sound Settings</h3>
+        <button id="ttsToggle" class="theme-toggle">🔇 TTS</button>
+        <button id="soundToggle" class="theme-toggle">🔊 Sound</button>
+        <br /><br /><br />
       <h3>Select Categories</h3>
       <div id="categoryCheckboxes"></div>
       <button id="applyFiltersBtn">Apply</button>
