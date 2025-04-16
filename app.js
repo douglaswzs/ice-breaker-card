@@ -1,6 +1,7 @@
 const LANGUAGE_KEY = "language";
 const DEFAULT_LANGUAGE = "en";
 let currentLanguage = localStorage.getItem(LANGUAGE_KEY) ?? DEFAULT_LANGUAGE;
+const FILTER_KEY = "activeCategories";
 
 const SOUND_KEY = "sound";
 const DEFAULT_SOUND = "on";
@@ -18,6 +19,14 @@ const languageToggle = document.getElementById("languageToggle");
 const soundToggle = document.getElementById("soundToggle");
 const themeToggle = document.getElementById("themeToggle");
 const categoriesGrid = document.getElementById("categoriesGrid");
+
+const filterToggle = document.getElementById("filterToggle");
+const filterPopup = document.getElementById("categoryFilterPopup");
+const categoryCheckboxes = document.getElementById("categoryCheckboxes");
+const applyFiltersBtn = document.getElementById("applyFiltersBtn");
+
+let activeCategories = JSON.parse(localStorage.getItem(FILTER_KEY)) || data.categories.map(c => c.name.en);
+
 
 const flipSound = new Audio("flipcard.mp3");
 
@@ -81,8 +90,8 @@ function getRandomQuestion(categoryFilter = "random") {
   const categories = data.categories;
 
   let selectedCategory = (categoryFilter === "random")
-    ? categories[Math.floor(Math.random() * categories.length)]
-    : categories.find(c => {
+  ? categories.filter(c => activeCategories.includes(c.name.en))[Math.floor(Math.random() * activeCategories.length)]
+  : categories.find(c => {
         const { en, zh } = c.name;
         return [en, zh, `${en} / ${zh}`].includes(categoryFilter);
       });
@@ -96,11 +105,13 @@ function getRandomQuestion(categoryFilter = "random") {
     originalQuestion: question
   };
 }
-
+/// Populate the category buttons based on active categories
 function populateCategoryButtons() {
   categoriesGrid.innerHTML = "";
 
   data.categories.forEach(category => {
+    if (!activeCategories.includes(category.name.en)) return;
+
     const button = document.createElement("button");
     button.textContent = getDisplayText(category.name.en, category.name.zh, category.name.roman);
     button.className = "category-btn";
@@ -121,6 +132,7 @@ function populateCategoryButtons() {
   });
   categoriesGrid.appendChild(randomBtn);
 }
+
 
 function drawQuestion(categoryFilter) {
   const { category, question, originalCategory, originalQuestion: oq } = getRandomQuestion(categoryFilter);
@@ -192,12 +204,49 @@ function applyTheme(theme) {
   document.documentElement.setAttribute("data-theme", theme);
   themeToggle.textContent = theme === "dark" ? "☀️" : "🌙";
 }
-
+// Apply the theme based on the current setting
 themeToggle.addEventListener("click", () => {
   currentTheme = currentTheme === "dark" ? "light" : "dark";
   localStorage.setItem(THEME_KEY, currentTheme);
   applyTheme(currentTheme);
 });
+
+// Filter category functionality
+filterToggle.addEventListener("click", () => {
+  filterPopup.classList.toggle("show");
+  populateCategoryCheckboxes();
+});
+//  Populate the filter checkboxes with categories
+function populateCategoryCheckboxes() {
+  categoryCheckboxes.innerHTML = "";
+  data.categories.forEach(category => {
+    const label = document.createElement("label");
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.value = category.name.en;
+    checkbox.checked = activeCategories.includes(category.name.en);
+    label.appendChild(checkbox);
+    label.append(` ${getDisplayText(category.name.en, category.name.zh, category.name.roman)}`);
+    categoryCheckboxes.appendChild(label);
+  });
+}
+//
+applyFiltersBtn.addEventListener("click", () => {
+  const checkboxes = categoryCheckboxes.querySelectorAll("input[type='checkbox']");
+  activeCategories = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
+  localStorage.setItem(FILTER_KEY, JSON.stringify(activeCategories)); // ✅ save to localStorage
+  filterPopup.classList.remove("show");
+  populateCategoryButtons();
+});
+// dismiss the filter popup when clicking outside of it
+document.addEventListener("click", (e) => {
+  const isClickInside = filterPopup.contains(e.target) || filterToggle.contains(e.target);
+  if (!isClickInside) {
+    filterPopup.classList.remove("show");
+  }
+});
+
+
 
 // Initial setup
 updateLanguageToggleText();
@@ -205,6 +254,7 @@ soundToggle.textContent = soundLabels[soundOn];
 applyTheme(currentTheme);
 populateCategoryButtons();
 
+// Populate the initial question
 card.addEventListener("click", () => {
   if (!lastCategory) drawQuestion("random");
 
