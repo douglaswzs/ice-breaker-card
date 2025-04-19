@@ -39,6 +39,7 @@ const soundToggle = document.getElementById("soundToggle");
 const themeToggle = document.getElementById("themeToggle");
 const ttsToggle = document.getElementById("ttsToggle");
 const categoriesGrid = document.getElementById("categoriesGrid");
+const resetQuestions = document.getElementById("resetQuestions");
 
 const filterToggle = document.getElementById("filterToggle");
 const filterPopup = document.getElementById("categoryFilterPopup");
@@ -46,7 +47,7 @@ const categoryCheckboxes = document.getElementById("categoryCheckboxes");
 const applyFiltersBtn = document.getElementById("applyFiltersBtn");
 
 let activeCategories = JSON.parse(localStorage.getItem(FILTER_KEY)) || data.categories.map(c => c.name.en);
-
+let seenQuestions = JSON.parse(localStorage.getItem("seenQuestions") || "{}");
 
 const flipSound = new Audio("flipcard.mp3");
 
@@ -116,7 +117,28 @@ function getRandomQuestion(categoryFilter = "random") {
         return [en, zh, `${en} / ${zh}`].includes(categoryFilter);
       });
 
-  const question = selectedCategory.questions[Math.floor(Math.random() * selectedCategory.questions.length)];
+  if (!selectedCategory) return null;
+
+  const categoryKey = selectedCategory.name.en;
+  seenQuestions[categoryKey] = seenQuestions[categoryKey] || [];
+
+  const allQuestions = selectedCategory.questions;
+  const unseenIndices = allQuestions
+    .map((_, idx) => idx)
+    .filter(idx => !seenQuestions[categoryKey].includes(idx));
+
+  if (unseenIndices.length === 0) {
+    // All questions have been shown, reset
+    seenQuestions[categoryKey] = [];
+    localStorage.setItem("seenQuestions", JSON.stringify(seenQuestions));
+    return getRandomQuestion(categoryFilter); // try again after reset
+  }
+
+  const randomIdx = unseenIndices[Math.floor(Math.random() * unseenIndices.length)];
+  seenQuestions[categoryKey].push(randomIdx);
+  localStorage.setItem("seenQuestions", JSON.stringify(seenQuestions));
+
+  const question = allQuestions[randomIdx];
 
   return {
     category: getDisplayText(selectedCategory.name.en, selectedCategory.name.zh, selectedCategory.name.roman),
@@ -125,6 +147,7 @@ function getRandomQuestion(categoryFilter = "random") {
     originalQuestion: question
   };
 }
+
 /// Populate the category buttons based on active categories
 function populateCategoryButtons() {
   categoriesGrid.innerHTML = "";
@@ -245,13 +268,22 @@ filterToggle.addEventListener("click", () => {
 function populateCategoryCheckboxes() {
   categoryCheckboxes.innerHTML = "";
   data.categories.forEach(category => {
+    const enName = category.name.en;
+    const zhName = category.name.zh;
+    const romanName = category.name.roman;
+
+    const total = category.questions.length;
+    const seen = (seenQuestions[enName] || []).length;
+    const statLabel = ` (${seen}/${total})`;
+
     const label = document.createElement("label");
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
-    checkbox.value = category.name.en;
-    checkbox.checked = activeCategories.includes(category.name.en);
+    checkbox.value = enName;
+    checkbox.checked = activeCategories.includes(enName);
+
     label.appendChild(checkbox);
-    label.append(` ${getDisplayText(category.name.en, category.name.zh, category.name.roman)}`);
+    label.append(` ${getDisplayText(enName, zhName, romanName)}${statLabel}`);
     categoryCheckboxes.appendChild(label);
   });
 }
@@ -272,6 +304,20 @@ document.addEventListener("click", (e) => {
 });
 
 
+resetQuestions.addEventListener("click", () => {
+  seenQuestions = {};
+  localStorage.removeItem("seenQuestions");
+  showToast("✅ Question history has been reset!");
+});
+function showToast(message) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.className = "toast show";
+
+  setTimeout(() => {
+    toast.className = "toast"; // hide after 2.5 seconds
+  }, 2500);
+}
 
 // Initial setup
 updateLanguageToggleText();
