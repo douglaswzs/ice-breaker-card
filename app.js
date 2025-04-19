@@ -13,16 +13,16 @@ let ttsSetting = localStorage.getItem(TTS_KEY) || DEFAULT_TTS;
 let isSpeaking = false;
 const ttsCycle = {
   mute: "en",
-  en: "zh",
-  zh: "zh-yue",
-  "zh-yue": "mute"
+  en: "zh-CN",
+  "zh-CN": "zh-HK",
+  "zh-HK": "mute"
 };
 
 const ttsLabels = {
   mute: "🔇 TTS",
   en: "🗣️ EN",
-  zh: "🗣️ 中",
-  "zh-yue": "🗣️ 粤"
+  "zh-CN": "🗣️ 中",
+  "zh-HK": "🗣️ 粤"
 };
 
 
@@ -37,6 +37,7 @@ const questionText = document.getElementById("questionText");
 const languageToggle = document.getElementById("languageToggle");
 const soundToggle = document.getElementById("soundToggle");
 const themeToggle = document.getElementById("themeToggle");
+const ttsToggle = document.getElementById("ttsToggle");
 const categoriesGrid = document.getElementById("categoriesGrid");
 
 const filterToggle = document.getElementById("filterToggle");
@@ -282,7 +283,7 @@ populateCategoryButtons();
 
 // Flipping on the card
 card.addEventListener("click", () => {
-  if (isSpeaking) return;
+  //  if (isSpeaking) return;
   if (!lastCategory) drawQuestion("random");
 
   if (!card.classList.contains("flipped") && lastCategory && originalQuestion) {
@@ -319,7 +320,7 @@ function speakText(question) {
       ? question.en
       : question.zh; // Cantonese also uses zh for now
 
-  utter.lang = ttsSetting === "zh-yue" ? "zh-HK" : ttsSetting;
+  utter.lang = ttsSetting;
 
   utter.onstart = () => {
     isSpeaking = true;
