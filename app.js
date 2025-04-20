@@ -328,6 +328,7 @@ randomModeToggle.addEventListener("click", () => {
 resetQuestions.addEventListener("click", () => {
   seenQuestions = {};
   localStorage.removeItem("seenQuestions");
+  populateCategoryCheckboxes();
   showToast("✅ Question history has been reset!");
 });
 function showToast(message) {
