@@ -24,7 +24,8 @@ const ttsLabels = {
   "zh-CN": "🗣️ 中",
   "zh-HK": "🗣️ 粤"
 };
-
+const RANDOM_MODE_KEY = "randomMode";
+let randomMode = localStorage.getItem(RANDOM_MODE_KEY) === "true";
 
 const THEME_KEY = "theme";
 const DEFAULT_THEME = "light";
@@ -45,6 +46,9 @@ const filterToggle = document.getElementById("filterToggle");
 const filterPopup = document.getElementById("categoryFilterPopup");
 const categoryCheckboxes = document.getElementById("categoryCheckboxes");
 const applyFiltersBtn = document.getElementById("applyFiltersBtn");
+const randomModeToggle = document.getElementById("randomModeToggle");
+randomModeToggle.textContent = randomMode ? "🎲 Random Mode: On" : "🎲 Random Mode: Off";
+
 
 let activeCategories = JSON.parse(localStorage.getItem(FILTER_KEY)) || data.categories.map(c => c.name.en);
 let seenQuestions = JSON.parse(localStorage.getItem("seenQuestions") || "{}");
@@ -150,7 +154,23 @@ function getRandomQuestion(categoryFilter = "random") {
 
 /// Populate the category buttons based on active categories
 function populateCategoryButtons() {
+  function populateRandomButton() {
+    const randomBtn = document.createElement("button");
+    randomBtn.className = "category-btn";
+    randomBtn.textContent = getDisplayText("Random", "随机", "Suíjī");
+    randomBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      drawAndFlip("random");
+    });
+    categoriesGrid.appendChild(randomBtn);
+  }
+
   categoriesGrid.innerHTML = "";
+
+  if (randomMode) {
+    populateRandomButton();
+    return;
+  }
 
   data.categories.forEach(category => {
     if (!activeCategories.includes(category.name.en)) return;
@@ -166,14 +186,7 @@ function populateCategoryButtons() {
     categoriesGrid.appendChild(button);
   });
 
-  const randomBtn = document.createElement("button");
-  randomBtn.className = "category-btn";
-  randomBtn.textContent = getDisplayText("Random", "随机", "");
-  randomBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    drawAndFlip("random");
-  });
-  categoriesGrid.appendChild(randomBtn);
+  // populateRandomButton();
 }
 
 
@@ -301,6 +314,14 @@ document.addEventListener("click", (e) => {
   if (!isClickInside) {
     filterPopup.classList.remove("show");
   }
+});
+
+
+randomModeToggle.addEventListener("click", () => {
+  randomMode = !randomMode;
+  localStorage.setItem(RANDOM_MODE_KEY, randomMode);
+  randomModeToggle.textContent = randomMode ? "🎲 Random Mode: On" : "🎲 Random Mode: Off";
+  populateCategoryButtons();
 });
 
 
