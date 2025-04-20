@@ -32,7 +32,13 @@ body {
   perspective: 1000px;
   cursor: pointer;
 }
-
+.card,
+.card * {
+  user-select: none; /* Prevent text selection */
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  outline: none; /* Remove focus outline */
+}
 .card-inner {
   width: 100%;
   height: 100%;
