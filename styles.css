@@ -32,6 +32,7 @@ body {
   perspective: 1000px;
   cursor: pointer;
 }
+.card-face,
 .card,
 .card * {
   user-select: none; /* Prevent text selection */
