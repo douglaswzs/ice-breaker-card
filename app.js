@@ -405,3 +405,12 @@ function speakText(question) {
   speechSynthesis.cancel();
   speechSynthesis.speak(utter);
 }
+
+window.addEventListener("DOMContentLoaded", () => {
+  const intro = document.getElementById("introScreen");
+  intro.classList.add("show");
+
+  setTimeout(() => {
+    intro.remove(); // remove it from DOM after animation
+  }, 2000); // total time: fade in + delay + fade out
+});
