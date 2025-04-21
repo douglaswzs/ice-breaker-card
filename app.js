@@ -171,17 +171,17 @@ function flipForward() {
       flipSound.play();
     } catch {}
   }
-  card.classList.add("flipped");
+  card?.classList.add("flipped");
 }
 
 function drawAndFlip(categoryFilter) {
   const showNew = () => {
     drawQuestion(categoryFilter);
     flipForward();
-    if (card.classList.contains("flipped") && originalQuestion) speakText(originalQuestion);
+    if (card?.classList.contains("flipped") && originalQuestion) speakText(originalQuestion);
   };
-  if (card.classList.contains("flipped")) {
-    card.classList.remove("flipped");
+  if (card?.classList.contains("flipped")) {
+    card?.classList.remove("flipped");
     setTimeout(showNew, FLIP_BACK_DELAY);
   } else showNew();
 }
@@ -310,7 +310,7 @@ function populateCategoryCheckboxes() {
 // Initialization
 // =======================
 const flipSound = new Audio("flipcard.mp3");
-flipSound.addEventListener("error", () => console.warn("⚠️ Flip sound failed to load."));
+flipSound?.addEventListener("error", () => console.warn("⚠️ Flip sound failed to load."));
 
 window.addEventListener("DOMContentLoaded", () => {
   const intro = document.getElementById("introScreen");
