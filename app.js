@@ -171,7 +171,11 @@ function flipForward() {
       flipSound.play();
     } catch {}
   }
-  card?.classList.add("flipped");
+  if (card?.classList.contains("flipped")) {
+    card.classList.toggle("flipped");
+  } else {
+    card?.classList.add("flipped");
+  }
 }
 
 function drawAndFlip(categoryFilter) {
@@ -257,7 +261,6 @@ function setupEventListeners() {
       drawQuestion(lastCategory.name.en);
     }
     flipForward();
-    card.classList.toggle("flipped");
     if (card.classList.contains("flipped") && originalQuestion) {
       speakText(originalQuestion);
     }
