@@ -257,9 +257,7 @@ function setupEventListeners() {
 
   card?.addEventListener("click", () => {
     if (!lastCategory) drawQuestion("random");
-    if (!card.classList.contains("flipped") && originalQuestion) {
-      drawQuestion(lastCategory.name.en);
-    }
+
     flipForward();
     if (card.classList.contains("flipped") && originalQuestion) {
       speakText(originalQuestion);
