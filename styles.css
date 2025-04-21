@@ -114,9 +114,11 @@ body {
 .card-face,
 .card,
 .card * {
-  user-select: none; /* Prevent text selection */
+  /* Prevent text selection
+  /* user-select: none; 
   -webkit-user-select: none;
   -ms-user-select: none;
+   */
   outline: none; /* Remove focus outline */
   -webkit-tap-highlight-color: transparent; /* Prevent highlight on mobile tap */
   touch-action: manipulation;
