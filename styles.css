@@ -383,3 +383,20 @@ body {
 }
 
 
+
+
+.background-logo {
+  position: absolute;
+  /* top: 50%;
+  left: 50%; */
+  transform: translate(75%, 50%);
+  opacity: 1;
+  text-align: center;
+  z-index: 0;
+  pointer-events: none;
+  backface-visibility: hidden;
+}
+.categories-grid {
+  position: relative;
+  z-index: 1;
+}
