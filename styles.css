@@ -114,6 +114,7 @@ body {
   -webkit-user-select: none;
   -ms-user-select: none;
   outline: none; /* Remove focus outline */
+  -webkit-tap-highlight-color: transparent; /* Prevent highlight on mobile tap */
 }
 .card-inner {
   width: 100%;
