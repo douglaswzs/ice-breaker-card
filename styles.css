@@ -107,20 +107,7 @@ body {
   perspective: 1000px;
   cursor: pointer;
 }
-.card:focus {
-  outline: none;
-  -webkit-focus-ring-color: transparent;
-}
-.card-face,
-.card,
-.card * {
-  user-select: none; /* Prevent text selection */
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  outline: none; /* Remove focus outline */
-  -webkit-tap-highlight-color: transparent; /* Prevent highlight on mobile tap */
-  touch-action: manipulation;
-}
+
 .card-inner {
   width: 100%;
   height: 100%;
